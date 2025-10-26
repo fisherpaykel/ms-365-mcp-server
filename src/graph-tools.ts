@@ -234,6 +234,13 @@ export function registerGraphTools(
             }
           }
 
+          if (body && typeof body === 'object' && '@odata.etag' in body) {
+            const etag = (body as Record<string, unknown>)['@odata.etag'] as string;
+            headers['If-Match'] = etag;
+            delete (body as Record<string, unknown>)['@odata.etag'];
+            logger.info(`Auto-extracted @odata.etag from body and set If-Match header: ${etag}`);
+          }
+
           if (Object.keys(queryParams).length > 0) {
             const queryString = Object.entries(queryParams)
               .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
