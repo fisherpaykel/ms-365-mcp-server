@@ -23,5 +23,8 @@ RUN npm install --legacy-peer-deps --omit=dev --ignore-scripts
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/endpoints.json ./src/endpoints.json
 
+# Expose the HTTP port
+EXPOSE 3000
+
 ENTRYPOINT ["node", "dist/index.js"]
-CMD ["--http"]
+CMD ["--http", "3000"]
