@@ -6,8 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps --ignore-scripts
 
-# Copy source code and build
+# Copy source code, generate client, and build
 COPY . .
+RUN npm run generate
 RUN npm run build
 
 # Production stage - clean image with only production dependencies
@@ -22,6 +23,7 @@ RUN npm install --legacy-peer-deps --omit=dev --ignore-scripts
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/endpoints.json ./src/endpoints.json
+COPY --from=builder /app/src/generated ./src/generated
 
 # Expose the HTTP port
 EXPOSE 3000
